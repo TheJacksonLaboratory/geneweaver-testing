@@ -45,10 +45,6 @@ test contexts for Geneweaver packages. This module does not contain any tests.
 ### `geneweaver.testing.package`
 This module contains tools for testing and validating Geneweaver packages. 
 
-### `geneweaver.testing.schemas`
-This module contains tools for validating that methods and functions in Geneweaver packages conform to the Geneweaver
-project schemas. This package **does not** contain the schemas themselves. The schemas are defined in the
-`geneweaver-core` / `geneweaver.core.schemas` package.
 
 ## Contributing
 Contributions to this package are welcome. Please see the [Contributing](CONTRIBUTING.md) document for more information.
