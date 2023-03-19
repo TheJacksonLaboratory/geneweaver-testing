@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "geneweaver-testing"
+version = "0.0.1a4"
+description = "A library to standardize testing of GeneWeaver pacakges."
+authors = ["Alexander Berger <alexander.berger@jax.org>"]
+readme = "README.md"
+license = "Apache-2.0"
+packages = [
+    { include = "geneweaver/testing", from = "src" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+ruff = "^0.0.254"
+black = "^23.1.0"
+isort = "^5.12.0"
+pytest = "^7.2.2"
+mypy = "^1.0.1"
+tomli = "^2.0.1"
+pytest-cov = "^4.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

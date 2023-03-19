@@ -1,0 +1,4 @@
+.coverage
+.idea
+.python-version
+dist/
