@@ -195,22 +195,27 @@ REQUIRED_RUFF_RULES = {
     "PT": "PyTest Style",
 }
 
+RUFF_ERROR_MSG = (
+    "\n\nGeneweaver pyproject.toml `ruff` section should look like: \n"
+    "[tool.ruff]\n"
+    f"select = {list(REQUIRED_RUFF_RULES.keys())}"
+)
+
 
 @pytest.mark.parametrize("rule", REQUIRED_RUFF_RULES.keys())
 def test_pyproject_ruff_has_required_rules(
     pyproject_toml_contents: Optional[dict], rule: str
 ) -> None:
     """Test that the pyproject.toml file has the required rules enabled."""
+    assert "ruff" in pyproject_toml_contents["tool"], (
+        "pyproject.toml file does not have a [tool.ruff] section\n"
+        "see https://beta.ruff.rs/docs/configuration/ for more information."
+    ) + RUFF_ERROR_MSG
+
     assert "select" in pyproject_toml_contents["tool"]["ruff"], (
-        "pyproject.toml [ruff.tool] section missing 'select' key.\n"
-        "Geneweaver requires using rules: \n"
-        "[tool.ruff]\n"
-        f"select = {list(REQUIRED_RUFF_RULES.keys())}"
-    )
+        "pyproject.toml [ruff.tool] section missing 'select' key."
+    ) + RUFF_ERROR_MSG
 
     assert rule in pyproject_toml_contents["tool"]["ruff"]["select"], (
-        f"pyproject.toml [tool.ruff] select = section missing rule `{rule}.\n"
-        "Geneweaver requires using rules: \n"
-        "[tool.ruff]\n"
-        f"select = {list(REQUIRED_RUFF_RULES.keys())}"
-    )
+        f"pyproject.toml [tool.ruff] select = section missing rule `{rule}`."
+    ) + RUFF_ERROR_MSG
