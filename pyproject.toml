@@ -1,10 +1,12 @@
 [tool.poetry]
 name = "geneweaver-testing"
-version = "0.0.1a4"
+version = "0.0.1a7"
 description = "A library to standardize testing of GeneWeaver pacakges."
 authors = ["Alexander Berger <alexander.berger@jax.org>"]
 readme = "README.md"
 license = "Apache-2.0"
+homepage = "https://bergsalex.github.io/geneweaver-docs/"
+repository = "https://github.com/bergsalex/geneweaver-testing"
 packages = [
     { include = "geneweaver/testing", from = "src" },
 ]
@@ -18,6 +20,11 @@ pytest = "^7.2.2"
 mypy = "^1.0.1"
 tomli = "^2.0.1"
 pytest-cov = "^4.0.0"
+
+[tool.ruff]
+select = [
+    "E", "F", "W", "C90", "N", "B", "ANN", "D", "I", "ERA", "PD", "NPY", "PT", "A", "W"
+]
 
 [build-system]
 requires = ["poetry-core"]

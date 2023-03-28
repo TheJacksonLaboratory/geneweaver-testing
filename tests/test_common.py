@@ -1,6 +1,4 @@
-"""
-Test common Geneweaver package functionality.
-"""
+"""Test common Geneweaver package functionality."""
 
 # Import all pre-defined tests from the geneweaver-testing pacakge so that PyTest
 # automatically runs them. Additional tests can also be added here as needed, but
