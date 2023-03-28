@@ -5,6 +5,8 @@ description = "A library to standardize testing of GeneWeaver pacakges."
 authors = ["Alexander Berger <alexander.berger@jax.org>"]
 readme = "README.md"
 license = "Apache-2.0"
+homepage = "https://bergsalex.github.io/geneweaver-docs/"
+repository = "https://github.com/bergsalex/geneweaver-testing"
 packages = [
     { include = "geneweaver/testing", from = "src" },
 ]

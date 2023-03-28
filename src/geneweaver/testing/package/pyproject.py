@@ -14,6 +14,8 @@ __all__ = [
     "test_pyproject_has_license",
     "test_pyproject_has_readme",
     "test_poetry_has_packages_definition",
+    "test_poetry_has_homepage",
+    "test_poetry_has_repository",
     "test_poetry_packages_defined_in_src_dir",
     "test_poetry_packages_in_geneweaver_namespace",
     "test_pyproject_has_ruff",
@@ -117,6 +119,30 @@ def test_poetry_has_packages_definition(
     assert (
         len(pyproject_toml_contents["tool"]["poetry"]["packages"]) > 0
     ), "pyproject.toml file does not have any packages listed"
+
+
+def test_poetry_has_homepage(
+    pyproject_toml_contents: Optional[dict],
+) -> None:
+    """Test that the pyproject.toml file has a homepage set."""
+    assert (
+        "homepage" in pyproject_toml_contents["tool"]["poetry"]
+    ), "pyproject.toml file does not have a homepage section"
+    assert (
+        pyproject_toml_contents["tool"]["poetry"]["homepage"] != ""
+    ), "pyproject.toml file does not have a value for the homepage"
+
+
+def test_poetry_has_repository(
+    pyproject_toml_contents: Optional[dict],
+) -> None:
+    """Test that the pyproject.toml file has a repository set."""
+    assert (
+        "repository" in pyproject_toml_contents["tool"]["poetry"]
+    ), "pyproject.toml file does not have a repository section"
+    assert (
+        pyproject_toml_contents["tool"]["poetry"]["repository"] != ""
+    ), "pyproject.toml file does not have a value for the repository"
 
 
 def test_poetry_packages_defined_in_src_dir(
