@@ -69,7 +69,7 @@ def package_name_from_pyproject(
 def package_submodule_name(package_name_from_pyproject: Optional[str]) -> Optional[str]:
     """Get the package name from the pyproject.toml file."""
     return (
-        package_name_from_pyproject.split("-")[-1]
+        "_".join(package_name_from_pyproject.split("-")[1:])
         if package_name_from_pyproject
         else None
     )

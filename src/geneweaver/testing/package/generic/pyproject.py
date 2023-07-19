@@ -301,4 +301,4 @@ def test_ruff_per_files_ignores(
         for ignore in per_files_ignores["tests/*"]:
             assert ignore in ("ANN201", "ANN001"), PER_FILES_IGNORES_MSG
     else:
-        warnings.warn(IGNORING_ALLOWED_WARN)
+        warnings.warn(IGNORING_ALLOWED_WARN)  # noqa: B028
