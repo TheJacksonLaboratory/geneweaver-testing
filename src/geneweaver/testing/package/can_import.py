@@ -49,10 +49,15 @@ def test_submodule_available_from_namespace_package(
     package_submodule_name: Optional[str], is_tool_package: bool
 ) -> None:
     """Test that the package is available from the geneweaver namespace."""
-    import geneweaver
-
     if is_tool_package:
-        package_submodule_name = f"tools.{package_submodule_name}"
+        import geneweaver.tools
 
-    assert hasattr(geneweaver, package_submodule_name), ERROR_MESSAGE
-    assert getattr(geneweaver, package_submodule_name) is not None, ERROR_MESSAGE
+        assert hasattr(geneweaver.tools, package_submodule_name), ERROR_MESSAGE
+        assert (
+            getattr(geneweaver.tools, package_submodule_name) is not None
+        ), ERROR_MESSAGE
+    else:
+        import geneweaver
+
+        assert hasattr(geneweaver, package_submodule_name), ERROR_MESSAGE
+        assert getattr(geneweaver, package_submodule_name) is not None, ERROR_MESSAGE
