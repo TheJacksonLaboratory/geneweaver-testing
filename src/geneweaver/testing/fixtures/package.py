@@ -13,6 +13,7 @@ __all__ = [
     "pyproject_toml_contents",
     "package_name_from_pyproject",
     "package_submodule_name",
+    "is_tool_package",
 ]
 
 
@@ -69,7 +70,13 @@ def package_name_from_pyproject(
 def package_submodule_name(package_name_from_pyproject: Optional[str]) -> Optional[str]:
     """Get the package name from the pyproject.toml file."""
     return (
-        package_name_from_pyproject.split("-")[-1]
+        "_".join(package_name_from_pyproject.split("-")[1:])
         if package_name_from_pyproject
         else None
     )
+
+
+@pytest.fixture(scope="session")
+def is_tool_package(project_root: Optional[str]) -> bool:
+    """Return True if the package is a tool package."""
+    return (project_root / "src" / "geneweaver" / "tools").is_dir()

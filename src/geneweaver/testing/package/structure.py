@@ -25,10 +25,14 @@ def test_geneweaver_dir_is_namespace_package(project_root: pathlib.Path) -> None
 
 
 def test_has_package_directory(
-    project_root: pathlib.Path, package_submodule_name: str
+    project_root: pathlib.Path, package_submodule_name: str, is_tool_package: bool
 ) -> None:
     """Test that the package directory exists."""
-    assert (project_root / "src" / "geneweaver" / package_submodule_name).is_dir(), (
+    root_path = project_root / "src" / "geneweaver"
+    if is_tool_package:
+        root_path = root_path / "tools"
+
+    assert (root_path / package_submodule_name).is_dir(), (
         f'"{package_submodule_name}" package directory '
         f'expected in "geneweaver" namespace'
     )

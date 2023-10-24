@@ -17,15 +17,21 @@ ERROR_MESSAGE = (
 )
 
 
-def test_can_import_absolute(package_submodule_name: Optional[str]) -> None:
+def test_can_import_absolute(
+    package_submodule_name: Optional[str], is_tool_package: bool
+) -> None:
     """Test that we can import the package from the top level namespace."""
-    module = importlib.import_module(f"geneweaver.{package_submodule_name}")
+    root_module = "geneweaver.tools" if is_tool_package else "geneweaver"
+    module = importlib.import_module(f"{root_module}.{package_submodule_name}")
     assert module is not None, ERROR_MESSAGE
 
 
-def test_can_import_relative(package_submodule_name: Optional[str]) -> None:
+def test_can_import_relative(
+    package_submodule_name: Optional[str], is_tool_package: bool
+) -> None:
     """Test that we can import the package relative to the geneweaver namespace."""
-    module = importlib.import_module(f".{package_submodule_name}", "geneweaver")
+    root_module = "geneweaver.tools" if is_tool_package else "geneweaver"
+    module = importlib.import_module(f".{package_submodule_name}", root_module)
     assert module is not None, ERROR_MESSAGE
 
 
@@ -40,10 +46,18 @@ def test_can_import_geneweaver() -> None:
 
 
 def test_submodule_available_from_namespace_package(
-    package_submodule_name: Optional[str],
+    package_submodule_name: Optional[str], is_tool_package: bool
 ) -> None:
     """Test that the package is available from the geneweaver namespace."""
-    import geneweaver
+    if is_tool_package:
+        import geneweaver.tools
 
-    assert hasattr(geneweaver, package_submodule_name), ERROR_MESSAGE
-    assert getattr(geneweaver, package_submodule_name) is not None, ERROR_MESSAGE
+        assert hasattr(geneweaver.tools, package_submodule_name), ERROR_MESSAGE
+        assert (
+            getattr(geneweaver.tools, package_submodule_name) is not None
+        ), ERROR_MESSAGE
+    else:
+        import geneweaver
+
+        assert hasattr(geneweaver, package_submodule_name), ERROR_MESSAGE
+        assert getattr(geneweaver, package_submodule_name) is not None, ERROR_MESSAGE
