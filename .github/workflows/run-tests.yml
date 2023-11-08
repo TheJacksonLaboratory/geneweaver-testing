@@ -25,7 +25,7 @@ jobs:
 
     - name: Install Poetry
       run: |
-        curl -sSL https://install.python-poetry.org | POETRY_HOME=/etc/poetry python3 -
+        curl -sSL https://install.python-poetry.org | python3 -
 
     - name: Configure Poetry
       run: |
