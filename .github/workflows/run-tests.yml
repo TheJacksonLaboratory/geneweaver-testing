@@ -33,9 +33,10 @@ jobs:
 #          git push
   test:
     needs: format-lint
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: [ubuntu-latest, macos-latest]
         python-version: ['3.8', '3.9', '3.10']
     steps:
     - uses: actions/checkout@v3
@@ -54,12 +55,13 @@ jobs:
         poetry install
     - name: Test with pytest
       run: |
-        poetry run pytest tests --junitxml=junit/test-results-${{ matrix.python-version }}.xml \
-        --cov=geneweaver.testing --cov-report html --cov-report term
+        poetry run pytest tests -cov=geneweaver.testing \
+        --cov-report html-${{ matrix.python-version }}-${{ matrix.os }} \
+        --cov-report term
     - name: Upload pytest test results
       uses: actions/upload-artifact@v3
       with:
-        name: pytest-results-${{ matrix.python-version }}
-        path: junit/test-results-${{ matrix.python-version }}.xml
+        name: pytest-results-${{ matrix.python-version }}-${{ matrix.os }}
+        path: html-${{ matrix.python-version }}-${{ matrix.os }}/
       # Use always() to always run this step to publish test results when there are test failures
       if: ${{ always() }}
