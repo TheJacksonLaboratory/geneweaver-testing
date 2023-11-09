@@ -24,20 +24,13 @@ jobs:
       - name: Run Black Formatter
         run: |
           black src/
-#      - name: Commit changes
-#        run: |
-#          git config --global user.name 'CICD Formatter'
-#          git config --global user.email 'alexander.berger@jax.com'
-#          git add src/
-#          git commit -m "Apply black formatting" || echo "No changes to commit"
-#          git push
   test:
     needs: format-lint
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        python-version: ['3.8', '3.9', '3.10']
+        python-version: ['3.8', '3.9', '3.10', '3.11']
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
@@ -65,6 +58,6 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: pytest-results-${{ matrix.python-version }}-${{ matrix.os }}
-        path: html/
+        path: html
       # Use always() to always run this step to publish test results when there are test failures
       if: ${{ always() }}
