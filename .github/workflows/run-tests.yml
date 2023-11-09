@@ -24,13 +24,13 @@ jobs:
       - name: Run Black Formatter
         run: |
           black src/
-      - name: Commit changes
-        run: |
-          git config --global user.name 'CICD Formatter'
-          git config --global user.email 'alexander.berger@jax.com'
-          git add src/
-          git commit -m "Apply black formatting" || echo "No changes to commit"
-          git push
+#      - name: Commit changes
+#        run: |
+#          git config --global user.name 'CICD Formatter'
+#          git config --global user.email 'alexander.berger@jax.com'
+#          git add src/
+#          git commit -m "Apply black formatting" || echo "No changes to commit"
+#          git push
   test:
     needs: format-lint
     runs-on: ubuntu-latest
@@ -54,4 +54,12 @@ jobs:
         poetry install
     - name: Test with pytest
       run: |
-        poetry run pytest tests --cov=geneweaver.testing --cov-report html --cov-report term 
+        poetry run pytest tests --junitxml=junit/test-results-${{ matrix.python-version }}.xml \
+        --cov=geneweaver.testing --cov-report html --cov-report term
+    - name: Upload pytest test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: pytest-results-${{ matrix.python-version }}
+        path: junit/test-results-${{ matrix.python-version }}.xml
+      # Use always() to always run this step to publish test results when there are test failures
+      if: ${{ always() }}
