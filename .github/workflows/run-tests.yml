@@ -59,12 +59,12 @@ jobs:
     - name: Test with pytest
       run: |
         poetry run pytest tests -cov=geneweaver.testing \
-        --cov-report html-${{ matrix.python-version }}-${{ matrix.os }} \
+        --cov-report html \
         --cov-report term
     - name: Upload pytest test results
       uses: actions/upload-artifact@v3
       with:
         name: pytest-results-${{ matrix.python-version }}-${{ matrix.os }}
-        path: html-${{ matrix.python-version }}-${{ matrix.os }}/
+        path: html/
       # Use always() to always run this step to publish test results when there are test failures
       if: ${{ always() }}
