@@ -51,7 +51,7 @@ jobs:
         poetry install
     - name: Test with pytest
       run: |
-        poetry run pytest tests -cov=geneweaver.testing \
+        poetry run pytest tests --cov=geneweaver.testing \
         --cov-report html \
         --cov-report term
     - name: Upload pytest test results
