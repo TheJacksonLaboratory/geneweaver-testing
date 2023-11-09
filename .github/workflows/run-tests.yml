@@ -7,34 +7,51 @@ on:
     branches: [ main ]
 
 jobs:
-  test:
-
+  format-lint:
     runs-on: ubuntu-latest
-
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Install Black and Ruff
+        run: |
+          pip install black ruff
+      - name: Run Ruff Linter
+        run: |
+          ruff src/ --fix
+      - name: Run Black Formatter
+        run: |
+          black src/
+      - name: Commit changes
+        run: |
+          git config --global user.name 'CICD Formatter'
+          git config --global user.email 'alexander.berger@jax.com'
+          git add src/
+          git commit -m "Apply black formatting" || echo "No changes to commit"
+          git push
+  test:
+    needs: format-lint
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ['3.8', '3.9', '3.10']
-
     steps:
     - uses: actions/checkout@v3
-
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-
     - name: Install Poetry
       run: |
         curl -sSL https://install.python-poetry.org | python3 -
-
     - name: Configure Poetry
       run: |
         poetry config virtualenvs.create false
-
     - name: Install dependencies with Poetry
       run: |
         poetry install
-
     - name: Test with pytest
       run: |
         poetry run pytest tests --cov=geneweaver.testing --cov-report html --cov-report term 
