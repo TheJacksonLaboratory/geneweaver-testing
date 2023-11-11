@@ -1,63 +1,54 @@
-name: Python application test with Poetry
-
+name: Lint Code and Run Tests
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
-
 jobs:
   format-lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-      - name: Install Black and Ruff
-        run: |
-          pip install black ruff
-      - name: Run Ruff Linter
-        run: |
-          ruff src/ --fix
-      - name: Run Black Formatter
-        run: |
-          black src/
+    uses: ./.github/workflows/_format-lint-action.yml
+    with:
+      python-version: '3.9'
   test:
     needs: format-lint
-    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        python-version: ['3.8', '3.9', '3.10', '3.11']
+        python-version: ['3.9', '3.10', '3.11']
+    uses: ./.github/workflows/_run-tests-action.yml
+    with:
+      runner-os: ${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}
+  comment-coverage-report:
+    needs: [ test ]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    permissions:
+      pull-requests: write
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install Poetry
-      run: |
-        curl -sSL https://install.python-poetry.org | python3 -
-        if [[ "$RUNNER_OS" == "macOS" ]]; then
-          echo "/Users/runner/.local/bin:$PATH" >> $GITHUB_PATH
-        fi
-    - name: Configure Poetry
-      run: |
-        poetry config virtualenvs.create false
-    - name: Install dependencies with Poetry
-      run: |
-        poetry install
-    - name: Test with pytest
-      run: |
-        poetry run pytest tests --cov=geneweaver.testing \
-        --cov-report html \
-        --cov-report term
-    - name: Upload pytest test results
-      uses: actions/upload-artifact@v3
-      with:
-        name: pytest-coverage-${{ matrix.python-version }}-${{ matrix.os }}
-        path: htmlcov/
-      # Use always() to always run this step to publish test results when there are test failures
-      if: ${{ always() }}
+      - name: Download coverage report artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: coverage-report
+      - name: Read coverage report
+        id: read-coverage
+        run: |
+          echo "COVERAGE_REPORT<<EOF" >> $GITHUB_ENV
+          cat coverage_report.txt >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+      - name: Find Comment
+        uses: peter-evans/find-comment@v2
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: '### Test Coverage Report'
+      - name: Create or update comment
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          edit-mode: replace
+          body: |
+            ### Test Coverage Report
+            ```
+            ${{ env.COVERAGE_REPORT }}
+            ```
