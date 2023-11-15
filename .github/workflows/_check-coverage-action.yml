@@ -2,6 +2,10 @@ name: 'Test Coverage Definition'
 on:
   workflow_call:
     inputs:
+      coverage-module:
+        description: "Module to test coverage for"
+        type: string
+        required: true
       python-version:
         description: Python version to set up'
         default: '3.11'
@@ -18,6 +22,10 @@ on:
         description: 'Required coverage percentage'
         default: 100
         type: string
+      show-test-traceback:
+        description: "Show traceback for failed tests"
+        type: boolean
+        default: false
 jobs:
   run-tests:
     runs-on: ${{ inputs.runner-os }}
@@ -40,8 +48,8 @@ jobs:
       - name: Test with pytest
         run: |
           poetry run pytest tests \
-          --tb=no \
-          --cov=geneweaver.testing \
+          --tb=${{ inputs.show-test-traceback }} \
+          --cov=${{ inputs.coverage-module }} \
           --cov-report=term \
           --cov-report=html \
           --cov-fail-under=${{ inputs.required-coverage }} > coverage_report.txt

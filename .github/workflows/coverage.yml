@@ -11,6 +11,7 @@ jobs:
     uses: ./.github/workflows/_check-coverage-action.yml
     with:
       required-coverage: ${{ vars.REQUIRED_COVERAGE }}
+      coverage-module: "geneweaver.testing"
   comment-coverage-report:
     needs: [ check-coverage ]
     runs-on: ubuntu-latest
