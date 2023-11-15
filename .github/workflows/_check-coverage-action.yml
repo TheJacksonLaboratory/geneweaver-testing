@@ -24,8 +24,8 @@ on:
         type: string
       show-test-traceback:
         description: "Show traceback for failed tests"
-        type: boolean
-        default: false
+        type: string
+        default: "no"
 jobs:
   run-tests:
     runs-on: ${{ inputs.runner-os }}
