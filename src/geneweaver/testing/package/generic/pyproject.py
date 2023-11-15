@@ -236,10 +236,12 @@ def test_pyproject_ruff_has_required_rules(
 
 PER_FILES_IGNORES_MSG = (
     "pyproject.toml [tool.ruff.per-file-ignores] is only allowed to specify "
-    "tests/*.\nIt should look like: \n\n"
-    '[tool.ruff.per-file-ignores]\n"tests/*" = ["ANN201"]\n\n'
-    "You can optionally ignore argument type annotations (`ANN001`), but it is "
-    "not recommended.\n"
+    "`tests/*` and/or `src/*`.\nIt should look like: \n\n"
+    "[tool.ruff.per-file-ignores]\n"
+    '"tests/*" = ["ANN201"]\n'
+    '"src/*" = ["ANN101"]\n\n'
+    "You can optionally ignore argument type annotations (`ANN001`) in `tests/*`, but "
+    "it is not recommended.\n"
 )
 
 IGNORING_ALLOWED_WARN = (
@@ -288,6 +290,19 @@ def test_pyproject_ruff_does_not_have_other_specifications(
     ) + RUFF_ERROR_MSG
 
 
+def _check_tests_per_file_ignore(per_files_ignores: dict) -> None:
+    assert "tests/*" in per_files_ignores, PER_FILES_IGNORES_MSG
+    assert len(per_files_ignores["tests/*"]) in (1, 2), PER_FILES_IGNORES_MSG
+    for ignore in per_files_ignores["tests/*"]:
+        assert ignore in ("ANN201", "ANN001"), PER_FILES_IGNORES_MSG
+
+
+def _check_src_per_file_ignore(per_files_ignores: dict) -> None:
+    assert "src/*" in per_files_ignores, PER_FILES_IGNORES_MSG
+    assert len(per_files_ignores["src/*"]) == 1, PER_FILES_IGNORES_MSG
+    assert per_files_ignores["src/*"][0] == "ANN101", PER_FILES_IGNORES_MSG
+
+
 def test_ruff_per_files_ignores(
     pyproject_toml_contents: Optional[dict],
 ) -> None:
@@ -295,10 +310,16 @@ def test_ruff_per_files_ignores(
     # You can optionally ignore argument and return type annotations in tests.
     per_files_ignores = pyproject_toml_contents["tool"]["ruff"].get("per-file-ignores")
     if per_files_ignores:
-        assert len(per_files_ignores) == 1, PER_FILES_IGNORES_MSG
-        assert "tests/*" in per_files_ignores, PER_FILES_IGNORES_MSG
-        assert len(per_files_ignores["tests/*"]) in (1, 2), PER_FILES_IGNORES_MSG
-        for ignore in per_files_ignores["tests/*"]:
-            assert ignore in ("ANN201", "ANN001"), PER_FILES_IGNORES_MSG
+        assert len(per_files_ignores) in (1, 2), PER_FILES_IGNORES_MSG
+        if len(per_files_ignores) == 2:
+            _check_tests_per_file_ignore(per_files_ignores)
+            _check_src_per_file_ignore(per_files_ignores)
+        elif len(per_files_ignores) == 1 and "src/*" in per_files_ignores:
+            _check_src_per_file_ignore(per_files_ignores)
+        elif len(per_files_ignores) == 1 and "tests/*" in per_files_ignores:
+            _check_tests_per_file_ignore(per_files_ignores)
+        else:
+            raise AssertionError(PER_FILES_IGNORES_MSG)
+
     else:
         warnings.warn(IGNORING_ALLOWED_WARN)  # noqa: B028
