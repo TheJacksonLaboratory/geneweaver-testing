@@ -175,7 +175,7 @@ def test_poetry_build_system_definition(
     assert "build-system" in pyproject_toml_contents, error_msg
     assert "requires" in pyproject_toml_contents["build-system"], error_msg
     assert (
-        "poetry-core" == pyproject_toml_contents["build-system"]["requires"]
+        "poetry-core" in pyproject_toml_contents["build-system"]["requires"]
     ), error_msg
     assert "build-backend" in pyproject_toml_contents["build-system"], error_msg
     assert (
@@ -323,7 +323,9 @@ def test_ruff_per_files_ignores(
 ) -> None:
     """Ensure that the ruff configuration only ignores allowed errors."""
     # You can optionally ignore argument and return type annotations in tests.
-    per_files_ignores = pyproject_toml_contents["tool"]["ruff"].get("per-file-ignores")
+    tool_ruff = pyproject_toml_contents.get("tool", {}).get("ruff", None)
+    assert tool_ruff is not None, RUFF_ERROR_MSG
+    per_files_ignores = tool_ruff.get("per-file-ignores")
     if per_files_ignores:
         assert len(per_files_ignores) in (1, 2, 3), PER_FILES_IGNORES_MSG
         if len(per_files_ignores) == 3:
