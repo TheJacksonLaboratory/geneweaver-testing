@@ -307,10 +307,12 @@ def _check_src_per_file_ignore(per_files_ignores: dict) -> None:
 
 
 def _check_controller_per_file_ignore(per_files_ignores: dict) -> None:
-    assert "src/geneweaver/api/controllers/*" in per_files_ignores, PER_FILES_IGNORES_MSG
-    assert len(per_files_ignores["src/geneweaver/api/controllers/*"]) == 1, (
-        PER_FILES_IGNORES_MSG
-    )
+    assert (
+        "src/geneweaver/api/controllers/*" in per_files_ignores
+    ), PER_FILES_IGNORES_MSG
+    assert (
+        len(per_files_ignores["src/geneweaver/api/controllers/*"]) == 1
+    ), PER_FILES_IGNORES_MSG
     assert (
         per_files_ignores["src/geneweaver/api/controllers/*"][0] == "B008"
     ), PER_FILES_IGNORES_MSG
