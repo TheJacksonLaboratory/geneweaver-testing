@@ -68,7 +68,7 @@ jobs:
           METRIC_VALUE=$(cat coverage_report.txt | grep 'Total coverage:' | awk '{print $NF}' | sed 's/%//')
           curl --request POST \
           --url https://jacksonlaboratory.atlassian.net/gateway/api/compass/v1/metrics \
-          --user "$ATLASSIAN_COMPASS_EMAIL:$ATLASSIAN_COMPASS_KEY" \
+          --user "${{ vars.ATLASSIAN_COMPASS_EMAIL }}:${{ secrets.ATLASSIAN_COMPASS_KEY }}" \
           --header "Accept: application/json" \
           --header "Content-Type: application/json" \
           --data "{
@@ -81,7 +81,7 @@ jobs:
           METRIC_VALUE=$(poetry run radon cc src --total-average | grep 'Average complexity:' | awk '{print $NF}' | sed 's/[\(\)]//g')
           curl --request POST \
           --url https://jacksonlaboratory.atlassian.net/gateway/api/compass/v1/metrics \
-          --user "$ATLASSIAN_COMPASS_EMAIL:$ATLASSIAN_COMPASS_KEY" \
+          --user "${{ vars.ATLASSIAN_COMPASS_EMAIL }}:${{ secrets.ATLASSIAN_COMPASS_KEY }}" \
           --header "Accept: application/json" \
           --header "Content-Type: application/json" \
           --data "{
