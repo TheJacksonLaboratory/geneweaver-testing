@@ -1,4 +1,5 @@
 """Tests that verify that the package can be imported as expected."""
+
 import importlib
 from typing import Optional
 

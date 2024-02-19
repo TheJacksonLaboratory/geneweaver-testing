@@ -1,4 +1,5 @@
 """Test that pyproject.toml file is present and has required sections and contents."""
+
 from typing import Optional
 
 __all__ = [
