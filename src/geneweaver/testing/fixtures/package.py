@@ -1,4 +1,5 @@
 """Fixtures relating to the package and its structure."""
+
 import pathlib
 from typing import Optional
 

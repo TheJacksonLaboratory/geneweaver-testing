@@ -1,4 +1,5 @@
 """Test that the src and tests directories pass ruff checks."""
+
 import subprocess
 
 __all__ = ["test_ruff_src_dir", "test_ruff_tests_dir"]

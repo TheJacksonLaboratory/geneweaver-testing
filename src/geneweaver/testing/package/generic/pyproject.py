@@ -1,4 +1,5 @@
 """Generic tests that pyproject.toml has required sections and contents."""
+
 import pathlib
 import warnings
 from typing import Optional

@@ -1,4 +1,5 @@
 """Test the geneweaver.testing.package.generic.pyproject module."""
+
 from typing import Optional
 from unittest.mock import patch
 
