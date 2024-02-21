@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "geneweaver-testing"
-version = "0.1.0"
+version = "0.1.1"
 description = "A library to standardize testing of GeneWeaver pacakges."
 authors = ["Alexander Berger <alexander.berger@jax.org>"]
 readme = "README.md"

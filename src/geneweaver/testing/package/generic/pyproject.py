@@ -237,15 +237,19 @@ def test_pyproject_ruff_has_required_rules(
 
 PER_FILES_IGNORES_MSG = (
     "pyproject.toml [tool.ruff.per-file-ignores] is only allowed to specify "
-    "`tests/*` and/or `src/*`.\nIt should look like: \n\n"
+    "`tests/*`, `src/*`, and/or one controller "
+    "(e.g. `src/geneweaver/api/controller/*`)."
+    "\nIt should look like: \n\n"
     "[tool.ruff.per-file-ignores]\n"
     '"tests/*" = ["ANN201"]\n'
     '"src/*" = ["ANN101"]\n\n'
     "You can optionally ignore argument type annotations (`ANN001`) in `tests/*`, but "
     "it is not recommended.\n\n"
-    "NOTE: The geneweaver-api package has an additional per-file-ignore for "
-    "controllers:\n\n"
-    '"src/geneweaver/api/controllers/*" = ["B008"]\n\n'
+    "NOTE: API controller definitions have an additional per-file-ignore for"
+    '["B008", "ANN201"]. \n'
+    "You can define one controller per-file-ignore that adds "
+    "some combination of those code.\nFor example:\n\n"
+    '"src/geneweaver/aon/controller/*" = ["B008", "ANN201"]'
 )
 
 IGNORING_ALLOWED_WARN = (
@@ -308,15 +312,19 @@ def _check_src_per_file_ignore(per_files_ignores: dict) -> None:
 
 
 def _check_controller_per_file_ignore(per_files_ignores: dict) -> None:
-    assert (
-        "src/geneweaver/api/controllers/*" in per_files_ignores
-    ), PER_FILES_IGNORES_MSG
-    assert (
-        len(per_files_ignores["src/geneweaver/api/controllers/*"]) == 1
-    ), PER_FILES_IGNORES_MSG
-    assert (
-        per_files_ignores["src/geneweaver/api/controllers/*"][0] == "B008"
-    ), PER_FILES_IGNORES_MSG
+    controller_key = next(
+        (k for k in per_files_ignores.keys() if "controller" in k), None
+    )
+
+    assert controller_key is not None, PER_FILES_IGNORES_MSG
+
+    controller_ignores = per_files_ignores[controller_key]
+
+    for allowed in ["B008", "ANN201"]:
+        if allowed in controller_ignores:
+            controller_ignores.remove(allowed)
+
+    assert controller_ignores == [], PER_FILES_IGNORES_MSG
 
 
 def test_ruff_per_files_ignores(
