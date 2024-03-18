@@ -241,7 +241,7 @@ PER_FILES_IGNORES_MSG = (
     "(e.g. `src/geneweaver/api/controller/*`)."
     "\nIt should look like: \n\n"
     "[tool.ruff.per-file-ignores]\n"
-    '"tests/*" = ["ANN201"]\n'
+    '"tests/*" = ["ANN201", "ANN101"]\n'
     '"src/*" = ["ANN101"]\n\n'
     "You can optionally ignore argument type annotations (`ANN001`) in `tests/*`, but "
     "it is not recommended.\n\n"
@@ -260,7 +260,7 @@ IGNORING_ALLOWED_WARN = (
     "at the discretion of the developer.\n\n"
     "To ignore return type annotations in test, add the following to you "
     "pyproject.toml file:\n\n"
-    '[tool.ruff.per-file-ignores]\n"tests/*" = ["ANN201"]\n'
+    '[tool.ruff.per-file-ignores]\n"tests/*" = ["ANN201", "ANN101"]\n'
     "To ignore return and argument type annotations in test, add the following "
     "to you pyproject.toml file:\n\n"
     '[tool.ruff.per-file-ignores]\n"tests/*" = ["ANN001", "ANN201"]\n'
@@ -300,9 +300,9 @@ def test_pyproject_ruff_does_not_have_other_specifications(
 
 def _check_tests_per_file_ignore(per_files_ignores: dict) -> None:
     assert "tests/*" in per_files_ignores, PER_FILES_IGNORES_MSG
-    assert len(per_files_ignores["tests/*"]) in (1, 2), PER_FILES_IGNORES_MSG
+    assert len(per_files_ignores["tests/*"]) in (1, 2, 3), PER_FILES_IGNORES_MSG
     for ignore in per_files_ignores["tests/*"]:
-        assert ignore in ("ANN201", "ANN001"), PER_FILES_IGNORES_MSG
+        assert ignore in ("ANN101", "ANN201", "ANN001"), PER_FILES_IGNORES_MSG
 
 
 def _check_src_per_file_ignore(per_files_ignores: dict) -> None:
